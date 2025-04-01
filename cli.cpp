@@ -26,9 +26,29 @@ void deleteFile(const std::string& fileName){
     }
 }
 
+
+void changeDirectory(const std::string& path){
+    if(SetCurrentDirectoryA(path.c_str())){
+        std::cout<<"current directory set to"<<path<<std::endl;
+    }
+    else{
+        std::cout<<"error  retrieving the directory";
+    }
+}
+
+void retrieveDirectory(const std::string&){
+    char buffer[MAX_PATH];
+    if(GetCurrentDirectoryA(MAX_PATH, buffer)){
+        std::string currentPath(buffer);
+        std::cout<<"current diirectory "<<currentPath<<std::endl;
+    }
+}
+
 std::unordered_map<std::string, std::function<void(const std::string&)>> cm = {
     {"new", createFile},
     {"bin", deleteFile},
+    {"to", changeDirectory},
+    {"in", retrieveDirectory}
 };
 
 int handleCommand(std::vector<std::string>& words) {
@@ -61,7 +81,11 @@ int runCli(){
     std:: string input;
 
     while(true){
-        std::cout<<"cli>";
+        char buffer[MAX_PATH];;
+        if(GetCurrentDirectoryA(MAX_PATH, buffer)){
+            std::string currentPath(buffer);
+            std::cout<<currentPath<<"cli>";
+        }
 
         std::getline(std::cin, input);
         std::vector<std::string>words = handleInput(input);
